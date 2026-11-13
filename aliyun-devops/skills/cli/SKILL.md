@@ -28,6 +28,8 @@ description: Use the Yunxiao (云效) CLI for Codeup repos, Flow pipelines and d
 
    帮助里的 `Parameters:` 段是权威参数表。注意它是**按列宽折行**的：参数说明跨多行，还可能有 `structure:`（对象结构）和 `format:`（传值样例）两行，读的时候要一起看，只读首行会漏掉取值形态。
 
+   帮助文本**可能滞后于实际实现**（实测过 `--help` 说"只支持 keyset"、二进制里却写着"省略即为页码分页"，而当前版本省略会直接报 `--pagination is required`）。取值拿不准时，用一个明显非法的值试一次，看服务端报什么，比读文档可靠。
+
 3. 按模块查命令清单（每份含该模块全部命令、用途、必填参数）：
 
    | 模块 | 命令前缀 | 条数 | 参考 |
@@ -78,10 +80,11 @@ aliyun devops flow-update-pipeline-run --pipeline-id <id> --pipeline-run-id <run
 **部署（AppStack 变更单）**
 
 ```bash
-# 应用列表：--pagination 目前只支持键集（keyset）分页，--order-by 建议用 id
-aliyun devops app-stack-list-applications --order-by id --pagination <分页模式参数> --per-page 10
-# 翻页时传上一页返回的 nextToken，首页不传
-aliyun devops app-stack-list-applications --order-by id --pagination <同上> --next-token <nextToken>
+# 应用列表：--pagination 的合法值就是字面量 keyset（服务端会校验，乱值报 422 BadFormatForPagination）
+# keyset 模式下 --order-by 只接受 id（传 name 同样 422）
+aliyun devops app-stack-list-applications --order-by id --pagination keyset --per-page 10
+# 翻页传上一页返回的 nextToken，首页不传
+aliyun devops app-stack-list-applications --order-by id --pagination keyset --next-token <nextToken>
 
 aliyun devops app-stack-list-change-orders --app-name <app> --current 1 --page-size 10
 aliyun devops app-stack-create-change-order --app-name <app> --change-order-name <名称> \
@@ -92,7 +95,7 @@ aliyun devops app-stack-list-change-order-job-logs --app-name <app> --change-ord
 
 - `--envs` 是 **map**（帮助里给了 `structure: {<key>: string, ...}`）：键为环境名，值为该环境的部署参数；目前只支持**单环境**部署。
 - `--type` 取值：`Deploy`（部署）、`Scale`（扩缩容）、`Rollback`（回滚）、`Destroy`（删除资源）。
-- `--pagination` 帮助里只说明「目前仅支持 keyset 分页」，**没给具体 JSON 形态**——需要时先看控制台同请求的载荷或 OpenAPI 文档，不要自造结构。
+- `--pagination`：取值 `keyset`。keyset 模式下**不返回 `total`**（实测为 `null`），靠 `nextToken` 判断是否还有下一页；拿不到数据时先确认该组织是否真的没有应用，而不是以为翻页错了。
 - 变更单属对外发布链路，创建前必须确认应用、环境、版本与类型，并把 `--envs` 展开给人看。
 
 **建工作项并登工时（Projex）**
