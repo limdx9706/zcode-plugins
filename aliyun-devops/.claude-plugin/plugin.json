@@ -1,0 +1,27 @@
+{
+  "name": "aliyun-devops",
+  "version": "0.1.0",
+  "description": "Use the Yunxiao (云效) CLI — aliyun devops — for Codeup repositories, Flow pipelines and deployments, Projex work items and effort hours, AppStack applications, artifact packages, and Testhub.",
+  "description_i18n": {
+    "en": "Use the Yunxiao (云效) CLI — aliyun devops — for Codeup repositories, Flow pipelines and deployments, Projex work items and effort hours, AppStack applications, artifact packages, and Testhub.",
+    "zh-CN": "用云效 CLI（aliyun devops）管理 Codeup 代码库、Flow 流水线与部署、Projex 工作项与工时、AppStack 应用交付、制品仓库和测试。"
+  },
+  "author": {
+    "name": "lidongxin",
+    "url": "https://github.com/limdx9706"
+  },
+  "homepage": "https://help.aliyun.com/zh/yunxiao/developer-reference/",
+  "repository": "https://github.com/limdx9706/zcode-plugins",
+  "license": "MIT",
+  "keywords": [
+    "yunxiao",
+    "aliyun-devops",
+    "codeup",
+    "flow",
+    "projex",
+    "流水线",
+    "工作项",
+    "云效"
+  ],
+  "skills": "./skills"
+}
