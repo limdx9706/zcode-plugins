@@ -1,0 +1,25 @@
+{
+  "name": "wechat-devtools",
+  "version": "0.1.0",
+  "description": "Drive the local WeChat DevTools CLI: open/close projects, preview QR codes, upload versions, build npm, deploy cloud functions, and run automation.",
+  "description_i18n": {
+    "en": "Drive the local WeChat DevTools CLI: open/close projects, preview QR codes, upload versions, build npm, deploy cloud functions, and run automation.",
+    "zh-CN": "驱动本机微信开发者工具 CLI：打开/关闭项目、生成预览二维码、上传版本、构建 npm、部署云函数、跑自动化。"
+  },
+  "author": {
+    "name": "lidongxin",
+    "url": "https://github.com/limdx9706"
+  },
+  "homepage": "https://developers.weixin.qq.com/miniprogram/dev/devtools/cli.html",
+  "repository": "https://github.com/limdx9706/zcode-plugins",
+  "license": "MIT",
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "wechat-devtools",
+    "miniprogram-ci",
+    "小程序",
+    "微信开发者工具"
+  ],
+  "skills": "./skills"
+}
