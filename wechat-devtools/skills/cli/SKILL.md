@@ -83,7 +83,7 @@ wechatidecli preview --project <dir> --qr-format image --qr-output preview-qr.pn
 ```
 
 - 生成后用 Read 把 png 展示给用户，并说明这是体验版预览码、有效期有限、需要开发者或体验成员身份才能打开。
-- 需要塞进别的系统时用 `--qr-format base64`，或 `--qr-output base64@<path>` 形式。
+- 需要塞进别的系统时用 base64：`--qr-format base64 --qr-output base64@<path>`（官方示例就是这个组合）。
 - 想看包大小/分包信息加 `--info-output <path>`，输出是 JSON。
 - 指定自定义编译条件（进哪个页面、带什么参数）用：
 
@@ -91,7 +91,9 @@ wechatidecli preview --project <dir> --qr-format image --qr-output preview-qr.pn
   wechatidecli preview --project <dir> --compile-condition '{"pathName":"pages/index/index","query":"x=1&y=2"}'
   ```
 
-- `auto-preview` 是"直接推到手机上"的变体（`--auto-preview-type mobile|pc`），要求已登录；用户要的是能扫的码就用 `preview`，别混用。
+  **注意**：本机 36.6.0 的 `preview -h` 没有列出 `--compile-condition`，`auto-preview -h` 也没列 `--auto-preview-type mobile|pc`，但官方文档（2026-11-11 更新）有这两个参数，实测解析器也接受（不会报 unknown option）。属于"帮助未列出但可用"，不要因为 `-h` 没有就判定不支持。
+
+- `auto-preview` 是"直接推到手机上"的变体（`--auto-preview-type mobile|pc`，见上面的帮助说明），要求已登录；用户要的是能扫的码就用 `preview`，别混用。
 
 预览失败（编译错误、未登录、appid 无权限）时把原始错误贴出来，不要换命令碰运气。
 

@@ -4,7 +4,7 @@
     {
       "name": "wechat-devtools",
       "source": "./wechat-devtools",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Drive the local WeChat DevTools CLI: open/close projects, preview QR codes, upload versions, build npm, deploy cloud functions, and run automation.",
       "displayName": "WeChat DevTools",
       "displayName_i18n": {
