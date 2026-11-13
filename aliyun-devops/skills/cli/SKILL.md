@@ -1,6 +1,6 @@
 ---
 name: cli
-description: Use the Yunxiao (云效) CLI — aliyun devops — for Codeup repositories and merge requests, Flow pipelines and deployments, Projex work items and effort hours, AppStack applications, artifact packages, and Testhub. Use when a task involves 云效, Codeup, 流水线, 构建, 部署, 工作项, 任务, 工时, 版本, 制品, or 云效 API automation.
+description: Use the Yunxiao (云效) CLI for Codeup repos, Flow pipelines and deploys, Projex work items and effort hours, packages, and tests. Use when a task involves 云效, Codeup, 流水线, 工作项, 工时, 制品.
 ---
 
 # 使用云效 CLI
@@ -113,7 +113,7 @@ aliyun devops packages-get-artifact --repo-id <repoId> --repo-type <类型> --ar
 - `aliyun devops insight-list-queries` — 效能洞察查询列表。
 - `aliyun devops version` — 打印插件版本。
 
-## 写操作边界
+## 写操作和数据边界
 
 以下属于远端写操作，执行前展示目标、组织、资源和变更摘要并取得确认：
 
@@ -126,7 +126,7 @@ aliyun devops packages-get-artifact --repo-id <repoId> --repo-type <类型> --ar
 
 只读操作（`*-list-*`、`*-get-*`、`*-search-*`）直接执行。资源标识（projectId、pipelineId、workitemId、app 名、org-id）不明确时先查再问，不要从相似名称里猜。
 
-## 凭证与隐私
+### 凭证与隐私
 
 - 令牌通过 `ALIBABA_CLOUD_YUNXIAO_ACCESS_TOKEN` 或 `--yunxiao-access-token` 传入；它**不是**阿里云 AK/SK，`aliyun devops` 也不读 `~/.aliyun/config.json`。
 - 不要在对话、日志、命令参数或文件里回显令牌；不要用 `cat > ~/.yunxiao_env <<EOF` 这类方式把令牌写进命令（会留在会话记录里）。需要调整就让用户在自己的终端改。
