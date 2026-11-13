@@ -11,12 +11,13 @@
 运行 `/alipay-mini:setup`。先复用已安装的 CLI 与授权，只在缺失时处理：
 
 ```bash
-command -v minidev && minidev -v     # 没有则 npm i -g minidev（需先有 Node/npm）
+node -v && npm -v                         # 官方要求 Node 16 及以上
+npm i -g minidev --registry=https://registry.npmmirror.com
 minidev download-assets --with-compiler   # 编译器缺失时补下载（缓存约 356MB 在 ~/.minidev）
-minidev app list --machine-output    # 探测授权，同时列出可用 appId
+minidev app list --machine-output         # 探测授权，同时列出可用 appId
 ```
 
-未授权时二选一：`minidev login` 快速授权（电脑级，需用户扫码/点链接），或从开放平台下载身份密钥后用 `--identity-key-path` 指定。密钥只传路径，不回显内容。授权成功不等于某应用具备上传/提审权限，两者分开报告。
+未授权时二选一：`minidev login`（终端出现授权二维码，用支付宝 APP 扫码；会轮询等待，所以让用户在自己的终端里执行），或从开放平台下载身份密钥后用 `--identity-key-path` 指定。密钥只传路径，不回显内容。授权成功不等于某应用具备上传/提审权限，两者分开报告。
 
 ## Skills
 

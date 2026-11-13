@@ -8,9 +8,9 @@ Wrapper maintained by lidongxin, version 0.1.0; this is not a Tencent-published 
 
 ## Quick setup
 
-Run `/wechat-devtools:setup`. Reuse an installed IDE and existing login first; only handle installation when it is missing: verify the CLI with `command -v wechatidecli`, then confirm login with `wechatidecli islogin` — the `HTTP 服务地址` line on stderr is the current IDE port.
+Run `/wechat-devtools:setup`. Reuse an installed IDE and existing login first; only handle installation when it is missing: verify the CLI with `command -v wechatidecli` (official location `Contents/MacOS/cli`, bundled with the IDE — nothing to install separately), then confirm login with `wechatidecli islogin` — the `HTTP 服务地址` line on stderr is the current IDE port.
 
-The CLI talks to the IDE over a local HTTP service, so the service port must be enabled under **Settings → Security Settings** in the IDE. When not logged in, `wechatidecli login` opens a QR-code window and control returns to the user. The CLI token (`WECHAT_DEVTOOLS_CLI_TOKEN`) is only needed after an authentication error and is never requested or echoed by the agent. A successful login does not prove upload permission for a given appid; report the two separately.
+The CLI talks to the IDE over a local HTTP service, and the official docs require enabling the service port under **Settings → Security Settings** in the IDE first. When not logged in, export the QR code as an image with `wechatidecli login --qr-format image --qr-output qr.png` and hand it to the user (`terminal` and `base64` are the other formats). The CLI token (`WECHAT_DEVTOOLS_CLI_TOKEN`) is only needed after an authentication error and is never requested or echoed by the agent. A successful login does not prove upload permission for a given appid; report the two separately.
 
 ## Skills
 

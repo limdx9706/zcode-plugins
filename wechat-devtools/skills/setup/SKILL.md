@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Check or install WeChat DevTools and its CLI, enable the service port, complete login, provide the CLI token when needed, and verify with one read-only call. Run before mini program work when the environment state is unknown.
+description: Check or install WeChat DevTools and its CLI, enable the service port, complete login by handing the QR code to the user, provide the CLI token when needed, and verify with one read-only call.
 ---
 
 # 设置微信开发者工具 CLI
@@ -9,7 +9,7 @@ description: Check or install WeChat DevTools and its CLI, enable the service po
 
 ## 0. 四层状态，逐层判断
 
-**插件已安装 ≠ CLI 可用 ≠ 已登录 ≠ 有业务权限。** 按顺序确认，任何一层缺失就停在那一层并明确报告，不要把上层的成功当成本层通过。
+**插件已安装 ≠ CLI 可用 ≠ 已登录 ≠ 有业务权限。** 按顺序确认，缺哪层就停在哪层并明确报告，不要把上层的成功当成本层通过。
 
 ## 1. IDE 与 CLI 是否安装
 
@@ -19,9 +19,10 @@ command -v wechatidecli
 ```
 
 - **两者都在** → 进第 2 步。
-- **app 在、`wechatidecli` 不在** → CLI 随 IDE 提供，不必安装，直接用完整路径调用即可（不需要 sudo、不必建软链）：
+- **app 在、`wechatidecli` 不在** → CLI 随 IDE 提供，不必安装，直接用完整路径调用（不需要 sudo、不必建软链）。官方文档给的 CLI 位置就是：
 
   ```bash
+  # macOS: <安装路径>/Contents/MacOS/cli    Windows: <安装路径>/cli.bat
   /Applications/wechatwebdevtools.app/Contents/MacOS/cli islogin --lang zh
   ```
 
@@ -36,28 +37,43 @@ command -v wechatidecli
 
 > 陷阱：`wechatidecli --version` 不是有效参数。它会忽略参数、打印根帮助并以**退出码 0** 结束，容易被误判为"版本已确认"。用上面的 plist 命令取版本。
 
-## 2. 服务端口
+## 2. 服务端口（CLI 的前提）
 
-CLI 通过 IDE 的本地 HTTP 服务通信。`islogin` 成功时 stderr 会打印：
+官方文档明确：**使用命令行前必须先在开发者工具的 设置 → 安全设置 中开启服务端口。** 没有这一步，所有 CLI 和 HTTP 调用都不可用。
+
+`islogin` 成功时 stderr 会打印：
 
 ```
 ✔ IDE 已启动，HTTP 服务地址 http://127.0.0.1:<port>
 ```
 
-看到这一行说明服务端口已开启。若报连接失败 / 端口相关错误，引导用户在 IDE 里打开 **设置 → 安全设置**，开启 **服务端口**，并确认「CLI/HTTP 调用」可用。
+看到这一行说明服务端口已开启。若报连接失败 / 端口相关错误，引导用户打开 **设置 → 安全设置** 开启 **服务端口**。
 
-- 需要固定端口时显式传 `--port <port>`；IDE 已用其它端口启动时必须先 `quit`，否则端口冲突。
+- 需要固定端口时显式传 `--port <port>`；官方说明：IDE 已用其它端口启动时必须先 `quit`，否则端口冲突。
 - 端口是本地回环地址，不要把它当公网可达地址报告。
 
 ## 3. 登录
+
+先探测：
 
 ```bash
 wechatidecli islogin --lang zh
 ```
 
-- `{"login":true}`：已登录，进第 4 步。
-- `{"login":false}`：需要用户参与。执行 `wechatidecli login`，IDE 会跳出扫码窗口，把控制权交还用户去扫码；不要在同一轮阻塞等待，也不要索取用户的微信凭证。
-- 网络错误不等于未登录：报告具体错误，不要反复 `login`。
+`{"login":true}` → 已登录，进第 4 步。
+
+`{"login":false}` → 需要扫码。CLI 支持把二维码直接输出成图片，**Agent 应该走这条**，让用户在当前对话里就能扫：
+
+```bash
+wechatidecli login --qr-format image --qr-output login-qr.png --lang zh
+```
+
+生成后用 Read 把 png 展示给用户，并说明二维码有时效、过期就重跑。登录会阻塞等待扫码，所以：
+
+- 不要在同一轮里无限等待；把二维码交出去后结束本轮，用户确认后再回第 3 步复核。
+- 用户更愿意自己在终端操作时，给他 `wechatidecli login`（终端里直接画二维码，`-f terminal` 为默认）。
+- 需要把登录结果落盘时用 `--result-output <path>`。
+- 不要索取用户的微信账号密码，也不要代扫。
 
 ## 4. 令牌（仅在报权限/鉴权错误时处理）
 
@@ -77,7 +93,9 @@ wechatidecli <command> --token <令牌>      # 临时传入
 wechatidecli islogin --lang zh
 ```
 
-成功标准：退出码 0，且 stdout 最后一行 JSON 为 `{"login":true}`。这一步证明 CLI 与 IDE 通、账号已登录，**不证明**某个 appid 有上传或云开发权限——那要等具体业务命令返回才算。
+成功标准：**退出码 0** 且 stdout 最后一行 JSON 为 `{"login":true}`。官方约定返回码 `0` 为正常、`-1` 为错误，两样都要看。
+
+这一步证明 CLI 与 IDE 通、账号已登录，**不证明**某个 appid 有上传或云开发权限——那要等具体业务命令返回才算。
 
 ## 完成报告
 

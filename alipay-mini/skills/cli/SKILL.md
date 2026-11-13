@@ -73,10 +73,21 @@ minidev app list --machine-output
 
 ## 预览二维码
 
-`preview` 会构建并发起真机预览，成功后在开放平台生成预览版，返回可被手机 App 扫描的二维码。注意两点：
+官方行为：`preview` 先构建，再推送到开放平台生成预览版，然后**在终端显示预览二维码**，同时打印两个可用的东西：
 
-- `--auto-push` 默认开启——若目标端支持，会直接把小程序推到手机而不给二维码。**要让用户扫码就用 `--no-auto-push`。**
-- Agent 扫不了码，必须把二维码链接/文件交给用户，并说明这是预览版、需要开发者或体验成员身份、有效期有限。
+```
+✔ 生成预览码成功
+二维码图片地址 <url>
+Schema Url <...>
+[ 终端 ASCII 二维码 ]
+```
+
+所以交给用户的最优解是**把「二维码图片地址」那个 URL 给出来**（或 Read 下来当图展示），并说明这是预览版、需要开发者或体验成员身份、有效期有限。Schema Url 适合让用户直接唤起支付宝打开。
+
+- `--auto-push` 默认开启：若目标端支持，会**额外**把小程序推到手机，免扫码。它不影响二维码是否输出，别为了"拿到二维码"去关它。
+- 目标端不是支付宝 App 时必须显式指定 `-c`（`ampe` / `amap` / `quark` 等），否则二维码给错端。
+- 带页面与参数预览：`--page <pages/x/x>`、`--page-query`（onLoad 可取）、`--query`（app.js onLaunch 可取）、`--scene`（channelId）。
+- 用户在 `minidev dev` 里可以直接输入 `preview` / `remote-debug` / `web` / `ide`，走 DevServer 产物、比完整构建快，但官方说明这类模式**仅支持整包**，无法验证分包。
 
 预览失败（授权缺失、appId 无权限、编译错误、域名白名单）时贴原始 `message`，不要换参数碰运气。
 
@@ -88,3 +99,10 @@ minidev app list --machine-output
 ## 完成报告
 
 说明实际执行的命令、项目路径、appid、端类型，以及读取或写入的结果。发布链路（`upload` / `audit`）未获确认时只给待执行命令，不要代为执行。失败时区分"本地编译失败"和"平台接口失败"，前者贴编译错误，后者贴 `message` 与缺失的权限。
+
+## 来源
+
+- [快速开始](https://opendocs.alipay.com/isv/02q17j.md)
+- [指令列表概览](https://opendocs.alipay.com/isv/02q29z.md)
+- [preview 真机预览](https://opendocs.alipay.com/mini/02q3al)
+- [upload 上传项目](https://opendocs.alipay.com/mini/02q3an)

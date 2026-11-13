@@ -8,9 +8,9 @@
 
 ## 快速 setup
 
-运行 `/wechat-devtools:setup`。先复用已安装的 IDE 与登录态，只在缺失时处理安装：`command -v wechatidecli` 确认 CLI，`wechatidecli islogin` 确认登录，stderr 里的 `HTTP 服务地址` 即为当前 IDE 端口。
+运行 `/wechat-devtools:setup`。先复用已安装的 IDE 与登录态，只在缺失时处理：`command -v wechatidecli` 确认 CLI（官方位置 `Contents/MacOS/cli`，随 IDE 提供，无需单独安装）；`wechatidecli islogin` 确认登录，stderr 里的 `HTTP 服务地址` 即为当前 IDE 端口。
 
-CLI 通过 IDE 的本地 HTTP 服务通信，需在 IDE 的 **设置 → 安全设置** 开启服务端口。未登录时由 `wechatidecli login` 拉起扫码窗口，交还用户完成。令牌（`WECHAT_DEVTOOLS_CLI_TOKEN`）只在报鉴权错误时需要，不由 Agent 索取或回显。登录成功不等于某 appid 具备上传权限，两者分开报告。
+CLI 通过 IDE 的本地 HTTP 服务通信，官方要求先在 IDE 的 **设置 → 安全设置** 开启服务端口。未登录时用 `wechatidecli login --qr-format image --qr-output qr.png` 把二维码导出成图片交给用户扫（终端默认也支持 `terminal` / `base64`）。令牌（`WECHAT_DEVTOOLS_CLI_TOKEN`）只在报鉴权错误时需要，不由 Agent 索取或回显。登录成功不等于某 appid 具备上传权限，两者分开报告。
 
 ## Skills
 

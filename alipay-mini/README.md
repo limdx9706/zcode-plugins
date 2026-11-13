@@ -11,12 +11,13 @@ Wrapper maintained by lidongxin, version 0.1.0; this is not an Ant Group-publish
 Run `/alipay-mini:setup`. Reuse an installed CLI and existing authorization; only handle what is missing:
 
 ```bash
-command -v minidev && minidev -v     # else npm i -g minidev (requires Node/npm)
+node -v && npm -v                         # official requirement: Node 16+
+npm i -g minidev --registry=https://registry.npmmirror.com
 minidev download-assets --with-compiler   # only when the compiler is missing (~356MB cache in ~/.minidev)
-minidev app list --machine-output    # probes authorization and lists usable appIds
+minidev app list --machine-output         # probes authorization and lists usable appIds
 ```
 
-When unauthorized, pick one: `minidev login` for machine-level quick authorization (the user scans or opens a link), or download an identity key from the open platform and pass `--identity-key-path`. Only the key path is passed around, never its contents. A successful authorization does not prove upload or review permission for a specific app; report the two separately.
+When unauthorized, pick one: `minidev login` (a QR code appears in the terminal; scan it with the Alipay app — the command polls, so let the user run it in their own terminal), or download an identity key from the open platform and pass `--identity-key-path`. Only the key path is passed around, never its contents. A successful authorization does not prove upload or review permission for a specific app; report the two separately.
 
 ## Skills
 

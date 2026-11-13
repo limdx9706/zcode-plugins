@@ -12,6 +12,7 @@ description: Use the local WeChat DevTools CLI (wechatidecli) for mini program w
 1. **标准输出是 JSON，进度条走 stderr。** 只解析 stdout 中最后一个非空行，不要把 stderr 的 `✔ / -` 提示当数据，也不要因为 stderr 有输出就判定失败。
 2. **成功 = 退出码 0 且 JSON 语义成功。** 例如 `islogin` 返回 `{"login":true}`；`login:false` 是未登录而不是命令失败。
 3. **命令会自动拉起 IDE。** 传 `--port` 时若无运行中的 IDE，CLI 会启动 IDE 窗口（前台弹出）。IDE 已用另一个端口启动时，必须先 `quit` 再换端口，否则报端口冲突。
+4. **退出码是官方契约**：文档写明返回码 `0` 为正常、`-1` 为错误。结合 JSON 内容一起判断，不要只看其中一项。
 
 ## 范围
 
@@ -34,7 +35,7 @@ wechatidecli --help
 wechatidecli <command> --help
 ```
 
-注意：二级子命令的帮助不可用（`wechatidecli agent tool --help` 会打印根帮助）。到 `wechatidecli agent --help` / `wechatidecli cloud --help` 这一层为止，再往下按子命令名直接调。
+注意：二级子命令的帮助不可用（`wechatidecli agent tool --help` 会打印根帮助）。到 `wechatidecli agent --help` / `wechatidecli cloud --help` 这一层为止，再往下按子命令名直接调。要中文帮助加 `--lang zh`，官方写法是 `cli --lang zh -h`。
 
 ## 命令速查
 
@@ -75,13 +76,24 @@ wechatidecli <command> --help
 
 ## 预览二维码
 
-Agent 无法扫码，必须把二维码变成用户能看的东西：
+Agent 无法扫码，必须把二维码变成用户能看的东西。官方支持三种格式（`--qr-format`：`terminal` 默认 / `image` / `base64`），直接产出图片最省事：
 
 ```bash
 wechatidecli preview --project <dir> --qr-format image --qr-output preview-qr.png --lang zh
 ```
 
-`--qr-format terminal` 适合人在终端里看，不适合 Agent 中转。生成后用 Read 把 png 展示给用户，并说明这是体验版预览码、有效期有限、需要开发者或体验成员身份才能打开。预览失败（编译错误、未登录、appid 无权限）时把原始错误贴出来，不要换命令碰运气。
+- 生成后用 Read 把 png 展示给用户，并说明这是体验版预览码、有效期有限、需要开发者或体验成员身份才能打开。
+- 需要塞进别的系统时用 `--qr-format base64`，或 `--qr-output base64@<path>` 形式。
+- 想看包大小/分包信息加 `--info-output <path>`，输出是 JSON。
+- 指定自定义编译条件（进哪个页面、带什么参数）用：
+
+  ```bash
+  wechatidecli preview --project <dir> --compile-condition '{"pathName":"pages/index/index","query":"x=1&y=2"}'
+  ```
+
+- `auto-preview` 是"直接推到手机上"的变体（`--auto-preview-type mobile|pc`），要求已登录；用户要的是能扫的码就用 `preview`，别混用。
+
+预览失败（编译错误、未登录、appid 无权限）时把原始错误贴出来，不要换命令碰运气。
 
 ## 凭证与隐私
 
