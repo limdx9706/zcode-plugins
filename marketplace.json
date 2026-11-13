@@ -14,7 +14,7 @@
         "zh-CN": "驱动本机微信开发者工具 CLI：打开/关闭项目、生成预览二维码、上传版本、构建 npm、部署云函数、跑自动化。"
       },
       "category": "developer-tools",
-      "icon": "https://raw.githubusercontent.com/limdx9706/zcode-plugins/main/wechat-devtools/assets/icon-256.png"
+      "icon": "https://cdn.jsdelivr.net/gh/limdx9706/zcode-plugins@main/wechat-devtools/assets/icon-256.png"
     }
   ]
 }
