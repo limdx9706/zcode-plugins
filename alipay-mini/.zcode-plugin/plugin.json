@@ -1,0 +1,24 @@
+{
+  "name": "alipay-mini",
+  "version": "0.1.0",
+  "description": "Drive the Alipay mini program CLI (minidev): build without the IDE, run the dev server, preview on device, upload, submit for review, and manage versions.",
+  "description_i18n": {
+    "en": "Drive the Alipay mini program CLI (minidev): build without the IDE, run the dev server, preview on device, upload, submit for review, and manage versions.",
+    "zh-CN": "驱动支付宝小程序 CLI（minidev）：无需 IDE 编译、开发服务器、真机预览、上传、提审与版本管理。"
+  },
+  "author": {
+    "name": "lidongxin",
+    "url": "https://github.com/limdx9706"
+  },
+  "homepage": "https://opendocs.alipay.com/isv/02q17h",
+  "repository": "https://github.com/limdx9706/zcode-plugins",
+  "license": "MIT",
+  "keywords": [
+    "alipay",
+    "miniprogram",
+    "minidev",
+    "支付宝小程序",
+    "小程序"
+  ],
+  "skills": "./skills"
+}

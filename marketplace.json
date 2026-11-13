@@ -15,6 +15,21 @@
       },
       "category": "developer-tools",
       "icon": "https://cdn.jsdelivr.net/gh/limdx9706/zcode-plugins@main/wechat-devtools/assets/icon-256.png"
+    },
+    {
+      "name": "alipay-mini",
+      "source": "./alipay-mini",
+      "version": "0.1.0",
+      "description": "Drive the Alipay mini program CLI (minidev): build without the IDE, run the dev server, preview on device, upload, submit for review, and manage versions.",
+      "displayName": "Alipay Mini Program",
+      "displayName_i18n": {
+        "zh-CN": "支付宝小程序"
+      },
+      "description_i18n": {
+        "zh-CN": "驱动支付宝小程序 CLI（minidev）：无需 IDE 编译、开发服务器、真机预览、上传、提审与版本管理。"
+      },
+      "category": "developer-tools",
+      "icon": "https://cdn.jsdelivr.net/gh/limdx9706/zcode-plugins@main/alipay-mini/assets/icon-256.png"
     }
   ]
 }

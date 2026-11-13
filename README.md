@@ -17,6 +17,7 @@ Pin a branch or tag when needed: `limdx9706/zcode-plugins@main`.
 | Plugin | What it does | Requirements |
 |---|---|---|
 | [`wechat-devtools`](./wechat-devtools) | Drives the local WeChat DevTools CLI — open/close projects, preview QR codes, upload versions, build npm, deploy cloud functions, run automation | WeChat DevTools installed at `/Applications/wechatwebdevtools.app`, IDE logged in, service port enabled |
+| [`alipay-mini`](./alipay-mini) | Drives the Alipay mini program CLI (`minidev`) — build without the IDE, dev server, device preview/debug, upload, submit for review, version management | Node/npm, `minidev` installed globally, machine authorized via `minidev login` or an identity key |
 
 ## Layout
 
