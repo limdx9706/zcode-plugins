@@ -26,7 +26,7 @@ description: Use the Yunxiao (云效) CLI for Codeup repos, Flow pipelines and d
    aliyun devops <命令> --help               # 看参数（二级子命令帮助不可用，到 <命令> 这一层为止）
    ```
 
-   帮助里的 `Parameters:` 段是权威参数表；部分参数说明被源端截断，取值形态去[云效 OpenAPI 文档](https://help.aliyun.com/zh/yunxiao/developer-reference/)按同名接口确认。
+   帮助里的 `Parameters:` 段是权威参数表。注意它是**按列宽折行**的：参数说明跨多行，还可能有 `structure:`（对象结构）和 `format:`（传值样例）两行，读的时候要一起看，只读首行会漏掉取值形态。
 
 3. 按模块查命令清单（每份含该模块全部命令、用途、必填参数）：
 
@@ -63,28 +63,37 @@ description: Use the Yunxiao (云效) CLI for Codeup repos, Flow pipelines and d
 
 ```bash
 aliyun devops flow-list-pipelines --pipeline-name <关键词> --per-page 10
-aliyun devops flow-create-pipeline-run --pipeline-id <pipelineId>            # 触发；--params 传 JSON 运行参数
+aliyun devops flow-create-pipeline-run --pipeline-id <pipelineId>            # 触发
 aliyun devops flow-get-latest-pipeline-run --pipeline-id <pipelineId>        # 拿最新 runId 和状态
-aliyun devops flow-list-pipeline-jobs --pipeline-id <id> --category DEPLOY   # category 只支持 DEPLOY
+aliyun devops flow-list-pipeline-jobs --pipeline-id <id> --category DEPLOY   # category 目前只支持 DEPLOY
 aliyun devops flow-get-pipeline-job-run-log --pipeline-id <id> --pipeline-run-id <runId> --job-id <jobId>
 aliyun devops flow-stop-pipeline-job-run --pipeline-id <id> --pipeline-run-id <runId> --job-id <jobId>
 aliyun devops flow-update-pipeline-run --pipeline-id <id> --pipeline-run-id <runId>   # 终止整次运行
 ```
+
+`--params` 接一个 JSON 字符串，支持的键：`branchModeBranchs`（分支模式下要跑的分支）、`envs`（运行变量）、`runningBranchs`（以仓库地址为键指定分支）、`runningTags`（以仓库地址为键指定标签）。不知道当前流水线要带什么参数时，先 `flow-get-pipeline` 看定义，不要凭猜测拼。
 
 流水线运行状态、任务状态、跳过/重试（`flow-skip-pipeline-job-run`、`flow-retry-pipeline-job-run`、`flow-rerun-pipeline-job-run`）都在 [references/flow.md](references/flow.md)。
 
 **部署（AppStack 变更单）**
 
 ```bash
-aliyun devops app-stack-list-applications --order-by <字段> --pagination <分页参数>
+# 应用列表：--pagination 目前只支持键集（keyset）分页，--order-by 建议用 id
+aliyun devops app-stack-list-applications --order-by id --pagination <分页模式参数> --per-page 10
+# 翻页时传上一页返回的 nextToken，首页不传
+aliyun devops app-stack-list-applications --order-by id --pagination <同上> --next-token <nextToken>
+
 aliyun devops app-stack-list-change-orders --app-name <app> --current 1 --page-size 10
 aliyun devops app-stack-create-change-order --app-name <app> --change-order-name <名称> \
-  --envs <环境信息> --type Deploy
+  --envs '{"<环境名>":"<该环境的部署参数>"}' --type Deploy
 aliyun devops app-stack-get-change-order --app-name <app> --change-order-sn <sn>
 aliyun devops app-stack-list-change-order-job-logs --app-name <app> --change-order-sn <sn>
 ```
 
-`--envs`（key 为环境名）与 `--pagination` 的取值形态在源端帮助里被截断，先跑 `--help` 或查 OpenAPI 文档，不要凭猜测填。变更单属对外发布链路，创建前必须确认环境与版本。
+- `--envs` 是 **map**（帮助里给了 `structure: {<key>: string, ...}`）：键为环境名，值为该环境的部署参数；目前只支持**单环境**部署。
+- `--type` 取值：`Deploy`（部署）、`Scale`（扩缩容）、`Rollback`（回滚）、`Destroy`（删除资源）。
+- `--pagination` 帮助里只说明「目前仅支持 keyset 分页」，**没给具体 JSON 形态**——需要时先看控制台同请求的载荷或 OpenAPI 文档，不要自造结构。
+- 变更单属对外发布链路，创建前必须确认应用、环境、版本与类型，并把 `--envs` 展开给人看。
 
 **建工作项并登工时（Projex）**
 
