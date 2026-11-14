@@ -45,6 +45,21 @@
       },
       "category": "developer-tools",
       "icon": "./aliyun-devops/assets/icon-256.png"
+    },
+    {
+      "name": "wiztree",
+      "source": "./wiztree",
+      "version": "0.1.0",
+      "description": "Drive WizTree disk space analysis: scan drives and folders, export CSV and treemap PNG, locate large files and duplicates, and plan safe cleanup.",
+      "displayName": "WizTree Disk Analysis",
+      "displayName_i18n": {
+        "zh-CN": "WizTree 磁盘分析"
+      },
+      "description_i18n": {
+        "zh-CN": "驱动 WizTree 磁盘分析：扫描磁盘与目录、导出 CSV 与树图 PNG、定位大文件与重复文件、制定安全清理方案。"
+      },
+      "category": "utilities",
+      "icon": "./wiztree/assets/icon-256.png"
     }
   ]
 }
