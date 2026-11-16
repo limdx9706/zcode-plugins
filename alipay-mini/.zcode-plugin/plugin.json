@@ -1,6 +1,6 @@
 {
   "name": "alipay-mini",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Drive the Alipay mini program CLI (minidev): build without the IDE, run the dev server, preview on device, upload, submit for review, and manage versions.",
   "description_i18n": {
     "en": "Drive the Alipay mini program CLI (minidev): build without the IDE, run the dev server, preview on device, upload, submit for review, and manage versions.",

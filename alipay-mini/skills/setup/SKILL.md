@@ -67,13 +67,33 @@ minidev login
 
 **因此不要在 Agent 里阻塞调用 `minidev login`**——二维码是终端 ASCII 块，转述给你没用。正确做法是让用户在自己的终端里执行它，扫完回来再跑第 3 步探测。CLI 没有单独生成二维码图片的子命令，别去找 `minidev auth` 之类不存在的东西。
 
-另一条路是身份密钥：用户从开放平台下载后，命令里显式指定路径。
+另一条路是**开发工具密钥**（官方名称，不是"身份密钥"）。用户从开放平台下载后，命令里显式指定文件路径：
 
 ```bash
-minidev app list --machine-output --identity-key-path <路径>
+minidev app list --machine-output --identity-key-path <config.json 路径>
 ```
 
-身份密钥在开放平台的应用详情里下载，具体菜单以控制台当前版本为准；找不到就直接走扫码授权。密钥只传路径，内容不要出现在对话、文件、仓库或命令行历史里。
+官方给出的两种获取方式（[快速授权文档](https://opendocs.alipay.com/mini/02q29w.md)原文）：
+
+- **命令行生成**：`minidev login` 快速授权后自动生成，存在 `~/.minidev/config.json`（Windows 为 `C:\User\<用户名>\.minidev\config.json`）。
+- **网页生成**：登录 open.alipay.com → **账户中心 → 密钥管理 → 开发工具密钥 → 生成身份密钥**，点重置即可重置并下载。
+
+密钥文件内容形如 `{"alipay":{"authentication":{"toolId":"...","privateKey":"-----BEGIN PRIVATE KEY-----..."}}}`——**这也是为什么不能 cat 它**。
+
+两条硬约束，必须告诉用户：
+
+1. **同一支付宝用户在同一时刻只有一份开发工具密钥有效。** 在另一台电脑 `minidev login`，或在网页生成新密钥，都会让原来那份立即失效。
+2. **多机 / CI 不要每台都 login**（会互相踢掉）。官方建议分发那份 `config.json`，或用环境变量注入：
+
+   ```bash
+   export MINIDEV_RUNTIME_CONFIG='{"alipay.authentication":{"privateKey":"...","toolId":"..."}}'
+   ```
+
+   `--identity-key-path` 也可以指向分发过来的 `config.json`。
+
+权限差异：`audit` / `cancel-audit` / `--auto-publish` **仅应用管理员及以上角色的开发工具密钥生效**，普通开发者密钥能上传但不能提审。授权成功不代表这些动作可用。
+
+密钥只传路径，内容不要出现在对话、文件、仓库或命令行历史里；也不要读取或打印 `~/.minidev/config.json`。
 
 多端场景（`ampe` / `amap` / `quark` 等）才需要 `-c <clientType>`，默认 `alipay`，不要替用户改端类型。
 
